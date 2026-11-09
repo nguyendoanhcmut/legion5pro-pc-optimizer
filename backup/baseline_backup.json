@@ -1,0 +1,424 @@
+﻿{
+    "Timestamp":  "2026-11-10T00:42:05.0033360+07:00",
+    "PreFreeSpaceBytes":  143152873472,
+    "PreFreeSpaceGB":  133.32,
+    "OriginalBrightness":  10,
+    "OriginalRefreshRateHz":  60,
+    "Battery":  {
+                    "ChargeMode":  "Normal",
+                    "ChargeModeInt":  0,
+                    "SupportsConservation":  true,
+                    "IsExpressCharging":  false,
+                    "RemainingPercent":  100,
+                    "RemainingCapacityMWh":  71590,
+                    "FullChargeCapacityMWh":  71590,
+                    "DesignCapacityMWh":  80000,
+                    "VoltageMV":  17305,
+                    "CurrentMA":  0,
+                    "TemperatureC":  32,
+                    "CycleCount":  85,
+                    "Manufacturer":  "Sunwoda"
+                },
+    "DesktopShortcut":  {
+                            "OriginalPath":  "C:\\Users\\Admin\\Desktop\\TOI UU PUBG IRIS XE.lnk",
+                            "BackupPath":  "C:\\Users\\Admin\\.gemini\\antigravity\\scratch\\pc-optimizer\\backup\\TOI UU PUBG IRIS XE.lnk",
+                            "Existed":  true
+                        },
+    "PowerSettings":  [
+                          {
+                              "Name":  "PERFBOOSTMODE",
+                              "Subgroup":  "54533251-82be-4824-96c1-47b60b740d00",
+                              "Setting":  "be337238-0d82-4146-a960-4f3749d470c7",
+                              "AC":  2,
+                              "DC":  2
+                          },
+                          {
+                              "Name":  "PROCFREQMAX",
+                              "Subgroup":  "54533251-82be-4824-96c1-47b60b740d00",
+                              "Setting":  "75b0ae3f-bce0-45a7-8c89-c9611c25e100",
+                              "AC":  0,
+                              "DC":  3500
+                          },
+                          {
+                              "Name":  "PERFEPP",
+                              "Subgroup":  "54533251-82be-4824-96c1-47b60b740d00",
+                              "Setting":  "36687f9e-e3a5-4dbf-b1dc-15eb381c6863",
+                              "AC":  25,
+                              "DC":  60
+                          },
+                          {
+                              "Name":  "CPMINCORES",
+                              "Subgroup":  "54533251-82be-4824-96c1-47b60b740d00",
+                              "Setting":  "0cc5b647-c1df-4637-891a-dec35c318583",
+                              "AC":  100,
+                              "DC":  25
+                          },
+                          {
+                              "Name":  "CPMAXCORES",
+                              "Subgroup":  "54533251-82be-4824-96c1-47b60b740d00",
+                              "Setting":  "ea062031-0e34-4ff1-9b6d-eb1059334028",
+                              "AC":  100,
+                              "DC":  100
+                          },
+                          {
+                              "Name":  "GPUPREFERENCEPOLICY",
+                              "Subgroup":  "5fb4938d-1ee8-4b0f-9a3c-5036b0ab995c",
+                              "Setting":  "dd848b2a-8a5d-4451-9ae2-39cd41658f6c",
+                              "AC":  0,
+                              "DC":  0
+                          },
+                          {
+                              "Name":  "ESBATTTHRESHOLD",
+                              "Subgroup":  "de830923-a562-41af-a086-e3a2c6bad2da",
+                              "Setting":  "e69653ca-cf7f-4f05-aa73-cb833fa90ad4",
+                              "AC":  0,
+                              "DC":  30
+                          },
+                          {
+                              "Name":  "WIRELESSSAVING",
+                              "Subgroup":  "19cbb8fa-5279-450e-9fac-8a3d5fedd0c1",
+                              "Setting":  "12bbebe6-58d6-4636-95bb-3217ef867c1a",
+                              "AC":  0,
+                              "DC":  0
+                          }
+                      ],
+    "Services":  [
+                     {
+                         "Name":  "UDCService",
+                         "OriginalStartMode":  "Auto",
+                         "WasRunning":  true,
+                         "TargetStartup":  "Disabled"
+                     },
+                     {
+                         "Name":  "DiagTrack",
+                         "OriginalStartMode":  "Auto",
+                         "WasRunning":  true,
+                         "TargetStartup":  "Disabled"
+                     },
+                     {
+                         "Name":  "edgeupdate",
+                         "OriginalStartMode":  "Auto",
+                         "WasRunning":  false,
+                         "TargetStartup":  "Manual"
+                     },
+                     {
+                         "Name":  "edgeupdatem",
+                         "OriginalStartMode":  "Manual",
+                         "WasRunning":  false,
+                         "TargetStartup":  "Manual"
+                     },
+                     {
+                         "Name":  "CoccocElevationService",
+                         "OriginalStartMode":  "Manual",
+                         "WasRunning":  false,
+                         "TargetStartup":  "Manual"
+                     },
+                     {
+                         "Name":  "CocCocUpdaterInternalService154.0.8037.108",
+                         "OriginalStartMode":  "Auto",
+                         "WasRunning":  false,
+                         "TargetStartup":  "Manual"
+                     },
+                     {
+                         "Name":  "CocCocUpdaterService154.0.8037.108",
+                         "OriginalStartMode":  "Auto",
+                         "WasRunning":  false,
+                         "TargetStartup":  "Manual"
+                     },
+                     {
+                         "Name":  "GoogleUpdaterService157.0.8089.0",
+                         "OriginalStartMode":  "Auto",
+                         "WasRunning":  false,
+                         "TargetStartup":  "Manual"
+                     },
+                     {
+                         "Name":  "GoogleUpdaterInternalService157.0.8089.0",
+                         "OriginalStartMode":  "Auto",
+                         "WasRunning":  false,
+                         "TargetStartup":  "Manual"
+                     },
+                     {
+                         "Name":  "MapsBroker",
+                         "OriginalStartMode":  "Auto",
+                         "WasRunning":  false,
+                         "TargetStartup":  "Manual"
+                     }
+                 ],
+    "ScheduledTasks":  [
+                           {
+                               "TaskPath":  "\\",
+                               "TaskName":  "PUBGIrisXe-Boost",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\",
+                               "TaskName":  "OneDrive Per-Machine Standalone Update Task",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\",
+                               "TaskName":  "OneDrive Reporting Task-S-1-5-21-4103410102-500614160-3074263882-1001",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\",
+                               "TaskName":  "OneDrive Startup Task-S-1-5-21-4103410102-500614160-3074263882-1001",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\",
+                               "TaskName":  "PlatformExperiencesHelper_Daily",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\",
+                               "TaskName":  "PlatformExperiencesHelper_Metrics",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\",
+                               "TaskName":  "PlatformExperiencesHelper_OnUnlock",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\SoftLanding\\S-1-5-21-4103410102-500614160-3074263882-1001\\",
+                               "TaskName":  "SoftLandingCreativeManagementTask",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\SoftLanding\\S-1-5-21-4103410102-500614160-3074263882-1001\\",
+                               "TaskName":  "SoftLandingDeferralTask-{3b6ad30b-994c-4c73-af20-0e1fea31f48d}",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\SoftLanding\\S-1-5-21-4103410102-500614160-3074263882-1001\\",
+                               "TaskName":  "SoftLandingRefreshForExpirationTask-{db1a8137-8b55-4edd-81e0-2b26d9ecc719}",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\SoftLanding\\S-1-5-21-4103410102-500614160-3074263882-1001\\",
+                               "TaskName":  "SoftLandingTriggerTask-128000000001615609-render-{ed00bb10-e70b-4f03-94e5-7e42a453a23a}",
+                               "OriginalState":  "Disabled"
+                           },
+                           {
+                               "TaskPath":  "\\Mozilla\\",
+                               "TaskName":  "Firefox Background Update S-1-5-21-4103410102-500614160-3074263882-1001 308046B0AF4A39CB",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\Mozilla\\",
+                               "TaskName":  "Firefox Default Browser Agent 308046B0AF4A39CB",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\GoogleUser\\GoogleUpdater\\",
+                               "TaskName":  "GoogleUpdaterTaskUser157.0.8089.0{98F77427-65CC-46C0-8D52-28A338BF789A}",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\Microsoft\\Windows\\Application Experience\\",
+                               "TaskName":  "MareBackup",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\Microsoft\\Windows\\Application Experience\\",
+                               "TaskName":  "Microsoft Compatibility Appraiser Exp",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\Microsoft\\Windows\\Application Experience\\",
+                               "TaskName":  "StartupAppTask",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\Microsoft\\Windows\\Autochk\\",
+                               "TaskName":  "Proxy",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\Microsoft\\Windows\\Customer Experience Improvement Program\\",
+                               "TaskName":  "Consolidator",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\Microsoft\\Windows\\Customer Experience Improvement Program\\",
+                               "TaskName":  "UsbCeip",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\Microsoft\\Windows\\Feedback\\Siuf\\",
+                               "TaskName":  "DmClient",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\Microsoft\\Windows\\Feedback\\Siuf\\",
+                               "TaskName":  "DmClientOnScenarioDownload",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\Microsoft\\Windows\\Maps\\",
+                               "TaskName":  "MapsToastTask",
+                               "OriginalState":  "Ready"
+                           },
+                           {
+                               "TaskPath":  "\\Microsoft\\Windows\\Windows Error Reporting\\",
+                               "TaskName":  "QueueReporting",
+                               "OriginalState":  "Ready"
+                           }
+                       ],
+    "Registry":  [
+                     {
+                         "Path":  "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Dsh",
+                         "Name":  "AllowNewsAndInterests",
+                         "Type":  "DWord",
+                         "KeyExisted":  false,
+                         "ValueExisted":  false,
+                         "OriginalValue":  null,
+                         "TargetValue":  0
+                     },
+                     {
+                         "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Dsh",
+                         "Name":  "IsPrelaunchEnabled",
+                         "Type":  "DWord",
+                         "KeyExisted":  true,
+                         "ValueExisted":  true,
+                         "OriginalValue":  1,
+                         "TargetValue":  0
+                     },
+                     {
+                         "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+                         "Name":  "TaskbarDa",
+                         "Type":  "DWord",
+                         "KeyExisted":  true,
+                         "ValueExisted":  true,
+                         "OriginalValue":  0,
+                         "TargetValue":  0
+                     },
+                     {
+                         "Path":  "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization",
+                         "Name":  "DODownloadMode",
+                         "Type":  "DWord",
+                         "KeyExisted":  false,
+                         "ValueExisted":  false,
+                         "OriginalValue":  null,
+                         "TargetValue":  0
+                     },
+                     {
+                         "Path":  "HKCU:\\Software\\Policies\\Microsoft\\Windows\\Explorer",
+                         "Name":  "DisableSearchBoxSuggestions",
+                         "Type":  "DWord",
+                         "KeyExisted":  false,
+                         "ValueExisted":  false,
+                         "OriginalValue":  null,
+                         "TargetValue":  1
+                     },
+                     {
+                         "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Search",
+                         "Name":  "BingSearchEnabled",
+                         "Type":  "DWord",
+                         "KeyExisted":  true,
+                         "ValueExisted":  false,
+                         "OriginalValue":  null,
+                         "TargetValue":  0
+                     },
+                     {
+                         "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings",
+                         "Name":  "IsDynamicSearchBoxEnabled",
+                         "Type":  "DWord",
+                         "KeyExisted":  true,
+                         "ValueExisted":  true,
+                         "OriginalValue":  1,
+                         "TargetValue":  0
+                     },
+                     {
+                         "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDeveloperSettings",
+                         "Name":  "TaskbarEndTask",
+                         "Type":  "DWord",
+                         "KeyExisted":  false,
+                         "ValueExisted":  false,
+                         "OriginalValue":  null,
+                         "TargetValue":  1
+                     },
+                     {
+                         "Path":  "HKCU:\\Software\\Microsoft\\GameBar",
+                         "Name":  "AutoGameModeEnabled",
+                         "Type":  "DWord",
+                         "KeyExisted":  true,
+                         "ValueExisted":  false,
+                         "OriginalValue":  null,
+                         "TargetValue":  1
+                     },
+                     {
+                         "Path":  "HKCU:\\Software\\Microsoft\\GameBar",
+                         "Name":  "AllowAutoGameMode",
+                         "Type":  "DWord",
+                         "KeyExisted":  true,
+                         "ValueExisted":  false,
+                         "OriginalValue":  null,
+                         "TargetValue":  1
+                     },
+                     {
+                         "Path":  "HKLM:\\SOFTWARE\\Microsoft\\Windows Search\\Gather\\Windows\\SystemIndex",
+                         "Name":  "RespectPowerModes",
+                         "Type":  "DWord",
+                         "KeyExisted":  true,
+                         "ValueExisted":  true,
+                         "OriginalValue":  0,
+                         "TargetValue":  1
+                     },
+                     {
+                         "Path":  "HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile",
+                         "Name":  "SystemResponsiveness",
+                         "Type":  "DWord",
+                         "KeyExisted":  true,
+                         "ValueExisted":  true,
+                         "OriginalValue":  20,
+                         "TargetValue":  10
+                     },
+                     {
+                         "Path":  "HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile",
+                         "Name":  "NetworkThrottlingIndex",
+                         "Type":  "DWord",
+                         "KeyExisted":  true,
+                         "ValueExisted":  true,
+                         "OriginalValue":  15,
+                         "TargetValue":  -1
+                     },
+                     {
+                         "Path":  "HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games",
+                         "Name":  "GPU Priority",
+                         "Type":  "DWord",
+                         "KeyExisted":  true,
+                         "ValueExisted":  true,
+                         "OriginalValue":  8,
+                         "TargetValue":  8
+                     },
+                     {
+                         "Path":  "HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games",
+                         "Name":  "Priority",
+                         "Type":  "DWord",
+                         "KeyExisted":  true,
+                         "ValueExisted":  true,
+                         "OriginalValue":  2,
+                         "TargetValue":  6
+                     },
+                     {
+                         "Path":  "HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games",
+                         "Name":  "Scheduling Category",
+                         "Type":  "String",
+                         "KeyExisted":  true,
+                         "ValueExisted":  true,
+                         "OriginalValue":  "Medium",
+                         "TargetValue":  "High"
+                     },
+                     {
+                         "Path":  "HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games",
+                         "Name":  "SFIO Priority",
+                         "Type":  "String",
+                         "KeyExisted":  true,
+                         "ValueExisted":  true,
+                         "OriginalValue":  "Normal",
+                         "TargetValue":  "High"
+                     }
+                 ]
+}
