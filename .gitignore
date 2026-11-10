@@ -1,5 +1,6 @@
 # Ignore binary shortcuts and temporary backup copies
 backup/*.lnk
 backup/*.bak
+backup/*.dll
 *.tmp
 *.log

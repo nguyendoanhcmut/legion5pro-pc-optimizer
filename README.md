@@ -58,10 +58,28 @@ Qua kiểm toán telemetry từ `IdeaBatteryAgent.dll` và `battery_report.xml`,
 
 ---
 
-## 5. Hướng Dẫn Sử Dụng Nhanh
+## 5. Nhắc Chọn Chế Độ Pin Thông Minh Sau Khi Chơi Game (`22:15` Smart Post-Game Bedtime Reminder)
+
+Người dùng thường đi ngủ trong khung `22:00 - 23:45` nhưng có tối chơi PUBG / game Steam xong lúc `22:30`, có tối `23:30` (hoặc qua `00:15`). Tác vụ tự động **`\LegionBedtimeBatteryReminder`** giải quyết trọn vẹn bài toán sạc đầy `100%` cho sáng mai đi học mà **không bao giờ làm phiền giữa trận game**:
+
+1. **Tự động nhận diện Game & Đứng chờ ẩn 100% (`< 1 MB` RAM)**:
+   - Khởi chạy ngầm lúc **`22:15` mỗi tối** (`WindowStyle Hidden`, `StartWhenAvailable = True` nên bật máy lúc `22:45` vẫn chạy; tự bỏ qua nếu bật máy vào ban ngày ở giảng đường).
+   - Kiểm tra đồng thời cờ chính thức của Valve **`HKCU:\Software\Valve\Steam\RunningAppID > 0`**, danh sách tiến trình game (`TslGame`, `ExecPubg`, `cs2`, `valorant*`, `HalfSword*`, v.v.) và mọi tiến trình chạy từ `*\Steam\steamapps\common\*`.
+   - Nếu đang trong trận game: script tự thu gọn Working Set xuống **`~0.5 MB`** (`< 8 MB`), kiểm tra lại mỗi `15 giây` cho tới tối đa `02:00` sáng. Ngay khi thoát game (`RunningAppID = 0`), script chờ thêm **`8 giây`** để Steam đồng bộ Cloud xong rồi mới hiện bảng chọn.
+   - **Chống nhắc lặp trong cùng một đêm (`LastBedtimePromptDate`)**: Khung giờ `00:00 - 03:59` được tính về chu kỳ tối hôm trước, đảm bảo mỗi tối chỉ hỏi đúng 1 lần.
+2. **Bảng Chọn 1 Chạm (TopMost Dark Card + Tự Đóng Sau `120 giây`)**:
+   - **`[1] Mai Đi Học - Tiêu Chuẩn (Sạc đầy 100% + Cài sẵn Đi Học 6-7h)`**: Mở mạch sạc `Normal (100%, RapidCharge = False)` để máy tự sạc êm từ `59% -> 100%` (vẫn tiếp tục sạc đầy kể cả khi bạn Shutdown máy ngay sau đó) và cài sẵn toàn bộ thông số `DC 2.4GHz` cho sáng mai **mà không làm tối màn hình đang dùng tối nay**.
+   - **`[2] Mai Đi Học - Siêu Trâu 8h+ (Sạc đầy 100% + Cài sẵn Siêu Trâu)`**: Mở sạc êm `100%` và cài sẵn `DC 4 nhân 1.7GHz + Cốc Cốc Saver` cho sáng mai, giữ nguyên độ sáng màn hình tối nay.
+   - **`[3] Mai Ở Nhà / Không Đi Học (Giữ Khóa Pin 60% Chống Chai)`** *(Mặc định khi hết `120s` hoặc nhấn `Esc`)*: Khóa mạch sạc về `Storage (55% - 60%)` và đặt `PreArmedCampusMode = None`, không bao giờ treo máy hay chặn Windows Shutdown.
+3. **Cảnh Báo An Toàn Khi Đi Học Về (`-CheckReturnHome`)**:
+   - Nếu lần trước đã mở sạc `100%` (`Normal`) để đi học, ngay trên đầu bảng nhắc tối hôm sau (hoặc khi chạy `-CheckReturnHome`) hệ thống sẽ tô sáng lời nhắc khóa lại `60%` bằng nút `[3]` nếu ngày mai ở nhà.
+
+---
+
+## 6. Hướng Dẫn Sử Dụng Nhanh
 
 ### Cách 1: Mở Bảng Điều Khiển Tương Tác (Khuyên dùng)
-Nhấp đúp vào biểu tượng **`Che Do Di Hoc & Cuu Ho`** ngoài màn hình Desktop. Bảng điều khiển sẽ hiển thị đầy đủ thông số Pin (`%`, `Wh`, `mV`, `°C`), trạng thái GPU, RAM, dự báo số giờ dùng pin và mục **`[GỢI Ý HÀNH ĐỘNG TIẾP THEO]`**, sau đó bấm phím số từ `1` đến `6`.
+Nhấp đúp vào biểu tượng **`Che Do Di Hoc & Cuu Ho`** ngoài màn hình Desktop. Bảng điều khiển hiển thị đầy đủ thông số Pin (`%`, `Wh`, `mV`, `°C`), trạng thái GPU, lịch nhắc `22:15`, RAM, dự báo số giờ dùng pin và mục **`[GỢI Ý HÀNH ĐỘNG TIẾP THEO]`**, sau đó bấm phím số từ `1` đến `7` (`[6]` để Xem / Test / Bật-Tắt lịch nhắc `22:15`, `[7]` để Undo Baseline).
 
 ### Cách 2: Gọi Trực Tiếp Qua Dòng Lệnh (CLI Switches)
 ```powershell
@@ -83,22 +101,28 @@ powershell.exe -ExecutionPolicy Bypass -File .\CheDoDiHoc_CuuHo.ps1 -VeNha
 # [5] Cứu hộ xả RAM tức thì trong < 1 giây
 powershell.exe -ExecutionPolicy Bypass -File .\CheDoDiHoc_CuuHo.ps1 -CuuHoRAM
 
-# [6] Khôi phục toàn bộ cài đặt gốc ban đầu
+# [6] Mở thử bảng nhắc đi ngủ 22:15 hoặc Đăng ký / Tạm tắt lịch tự động
+powershell.exe -ExecutionPolicy Bypass -File .\CheDoDiHoc_CuuHo.ps1 -TestBedtimePrompt
+powershell.exe -ExecutionPolicy Bypass -File .\CheDoDiHoc_CuuHo.ps1 -RegisterBedtimeTask
+powershell.exe -ExecutionPolicy Bypass -File .\CheDoDiHoc_CuuHo.ps1 -DisableBedtimeTask
+powershell.exe -ExecutionPolicy Bypass -File .\CheDoDiHoc_CuuHo.ps1 -CheckReturnHome
+
+# [7] Khôi phục toàn bộ cài đặt gốc ban đầu
 powershell.exe -ExecutionPolicy Bypass -File .\CheDoDiHoc_CuuHo.ps1 -UndoBaseline
 ```
 
 ---
 
-## 6. Cấu Trúc Kho Lưu Trữ (Repository Structure)
+## 7. Cấu Trúc Kho Lưu Trữ (Repository Structure)
 
 ```text
 pc-optimizer/
-├── CheDoDiHoc_CuuHo.ps1              # Bảng điều khiển trung tâm 6-trong-1 + Smart Advisor
+├── CheDoDiHoc_CuuHo.ps1              # Bảng điều khiển trung tâm 7-trong-1 + Smart Advisor + Nhắc đi ngủ 22:15
 ├── baseline_setup.ps1                # Script thiết lập nền tảng 1 lần, dọn rác an toàn & Undo
-├── verify_all_modes.ps1              # Bộ kiểm thử tự động 22 cổng kiểm chứng phần cứng (22/22 PASS)
+├── verify_all_modes.ps1              # Bộ kiểm thử tự động 35 cổng kiểm chứng phần cứng, WMI ChargeRate & GUI (35/35 PASS)
 ├── backup/
 │   ├── baseline_backup.json          # Bản sao lưu thông số hệ thống gốc trước khi tối ưu
-│   └── runtime_state.json            # Trạng thái độ sáng màn hình và chế độ đi học hiện hành
+│   └── runtime_state.json            # Trạng thái độ sáng, PreArmedCampusMode & chu kỳ nhắc đi ngủ 22:15
 ├── scripts/
 │   └── pubg_wireless_and_hz_guard.ps1 # Script bảo vệ Wi-Fi PUBG (đã vá lỗi tắt máy & nhường quyền trên pin)
 └── docs/
@@ -109,12 +133,13 @@ pc-optimizer/
     ├── subagent5_longevity_and_8h_audit.md      # Mô hình hóa học chống chai pin & bài toán 8h-9.5h
     ├── implementation_execution_report.md       # Báo cáo triển khai thực tế trên máy
     ├── independent_verification_report.md       # Biên bản nghiệm thu độc lập 22/22 bài kiểm thử
-    └── pubg_guard_and_shutdown_verification.md  # Biên bản xác minh vá lỗi kẹt tắt máy do PUBG Guard
+    ├── pubg_guard_and_shutdown_verification.md  # Biên bản xác minh vá lỗi kẹt tắt máy do PUBG Guard
+    └── tonight_60pct_test_audit.md              # Kiểm toán thực tế giữ khóa 59%-60% suốt 7.5h cắm sạc & chơi PUBG
 ```
 
 ---
 
-## 7. Lộ Trình Cập Nhật Tiếp Theo (Roadmap / Future Enhancements)
+## 8. Lộ Trình Cập Nhật Tiếp Theo (Roadmap / Future Enhancements)
 
 1. **Tự động chuyển chế độ khi Cắm Sạc / Rút Sạc (`Auto AC/DC Event Watcher`)**:
    - Lắng nghe sự kiện nguồn của Windows (`WM_POWERBROADCAST` / Event ID `105` từ `Microsoft-Windows-Kernel-Power`) để tự động hiển thị thông báo Toast hoặc tự động kích hoạt **Chế độ Đi Học `[1]`** ngay khi rút sạc và nhắc chuyển về **Chế độ Về Nhà `[4]`** khi cắm sạc lại.

@@ -74,6 +74,8 @@ $batRaw = if (Test-Path $batPath) { Get-Content $batPath -Raw } else { "" }
 Assert-Check "1.5" "Desktop launcher points to CheDoDiHoc_CuuHo.ps1" ((Test-Path $batPath) -and ($batRaw -match 'CheDoDiHoc_CuuHo\.ps1')) "BatExists=$(Test-Path $batPath)" "Points to CheDoDiHoc_CuuHo.ps1"
 
 $preBri = [int](Get-CimInstance -Namespace root\WMI -ClassName WmiMonitorBrightness).CurrentBrightness
+$preChargeMode = $batAgent.GetBatteryChargeMode().BatteryChargeMode.ToString()
+$preRuntimeRaw = if (Test-Path $RuntimeJson) { [System.IO.File]::ReadAllText($RuntimeJson, [System.Text.Encoding]::UTF8) } else { $null }
 $protectedList = @('node', 'python', 'pythonw', 'browser', 'steam', 'goodbyedpi', 'EVKey64', 'FnHotkeyUtility')
 $preProcs = @{}
 foreach ($pn in $protectedList) {
@@ -118,9 +120,11 @@ Assert-Check "2.2d" "Mode [2] -DiHocUltra CocCoc Efficiency & BatterySaver Polic
 Assert-Check "2.2e" "Mode [2] -DiHocUltra Brightness 12% & PriorBrightness preserved" ($bri2 -eq 12 -and $rtAfterUltra.PriorBrightness -eq $preBri) "Current=${bri2}%, SavedPrior=$($rtAfterUltra.PriorBrightness)%" "Current=12%, SavedPrior=${preBri}%"
 
 $null = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $MainScript -SacDay100
-$cm3 = $batAgent.GetBatteryChargeMode()
-$bi3 = $batAgent.GetBatteryInformation().BatteryInformationList[0]
-Assert-Check "2.3" "Mode [3] -SacDay100 IdeaBatteryAgent Normal (0)" ($cm3.BatteryChargeMode.ToString() -eq 'Normal' -and [int]$cm3.BatteryChargeMode -eq 0 -and $bi3.IsExpressCharging -eq $false) "Mode=$($cm3.BatteryChargeMode) ($([int]$cm3.BatteryChargeMode)), IsExpressCharging=$($bi3.IsExpressCharging)" "Mode=Normal (0), IsExpressCharging=False"
+$cm3  = $batAgent.GetBatteryChargeMode()
+$bi3  = $batAgent.GetBatteryInformation().BatteryInformationList[0]
+$wmi3 = Get-CimInstance -Namespace root\WMI -ClassName BatteryStatus
+$cr3Ok = (-not $wmi3.PowerOnline) -or ($bi3.RemainingPercent -ge 98) -or ($wmi3.ChargeRate -gt 0)
+Assert-Check "2.3" "Mode [3] -SacDay100 IdeaBatteryAgent Normal (0) & WMI ChargeRate > 0" ($cm3.BatteryChargeMode.ToString() -eq 'Normal' -and [int]$cm3.BatteryChargeMode -eq 0 -and $bi3.IsExpressCharging -eq $false -and $cr3Ok) "Mode=$($cm3.BatteryChargeMode) ($([int]$cm3.BatteryChargeMode)), ChargeRate=$($wmi3.ChargeRate) mW, IsExpressCharging=$($bi3.IsExpressCharging)" "Mode=Normal (0), ChargeRate > 0 mW (when AC & <98%), IsExpressCharging=False"
 
 $null = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $MainScript -VeNha
 $cm4    = $batAgent.GetBatteryChargeMode()
@@ -159,6 +163,123 @@ Assert-Check "3.1" "Protected Processes & Services 100% Intact" $allProcsIntact 
 $npxFilesPost   = @(Get-ChildItem "$env:LOCALAPPDATA\npm-cache\_npx" -Recurse -File -ErrorAction SilentlyContinue).Count
 $cacheFilesPost = @(Get-ChildItem "$env:USERPROFILE\.cache" -Recurse -File -ErrorAction SilentlyContinue).Count
 Assert-Check "3.2" "Protected Caches (_npx & .cache) 100% Intact" ($npxFilesPost -eq $npxFilesPre -and $cacheFilesPost -eq $cacheFilesPre -and $npxFilesPost -gt 0 -and $cacheFilesPost -gt 0) "_npx=$npxFilesPost files, .cache=$cacheFilesPost files" "_npx=$npxFilesPre files, .cache=$cacheFilesPre files"
+
+$bedTask = Get-ScheduledTask -TaskPath '\' -TaskName 'LegionBedtimeBatteryReminder' -ErrorAction SilentlyContinue
+$bedXml  = if ($bedTask) { Export-ScheduledTask -TaskPath '\' -TaskName 'LegionBedtimeBatteryReminder' } else { '' }
+$bedOk   = ($null -ne $bedTask) -and
+           ($bedTask.State.ToString() -eq 'Ready') -and
+           ($bedXml -match '<LogonType>InteractiveToken</LogonType>') -and
+           ($bedXml -match 'T22:15:00') -and
+           ($bedXml -match '<StartWhenAvailable>true</StartWhenAvailable>') -and
+           ($bedXml -match '<DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>') -and
+           ($bedXml -match '<StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>') -and
+           ($bedXml -match '<ExecutionTimeLimit>PT4H</ExecutionTimeLimit>') -and
+           ($bedXml -match '<MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>') -and
+           ($bedXml -match '-WindowStyle Hidden') -and
+           ($bedXml -match '-BedtimePrompt')
+Assert-Check "4.1" "Scheduled Task \LegionBedtimeBatteryReminder (22:15 InteractiveToken)" $bedOk "State=$($bedTask.State), Logon=$($bedTask.Principal.LogonType)" "Ready, InteractiveToken, 22:15 Daily, PT4H, IgnoreNew, -BedtimePrompt"
+
+$testSteamKey = 'HKCU:\Software\PcOptimizerVerify\Steam'
+New-Item -Path "$testSteamKey\Apps\578080" -Force | Out-Null
+New-ItemProperty -Path $testSteamKey -Name 'RunningAppID' -Value 578080 -PropertyType DWord -Force | Out-Null
+New-ItemProperty -Path "$testSteamKey\Apps\578080" -Name 'Name' -Value 'PUBG: BATTLEGROUNDS' -PropertyType String -Force | Out-Null
+$gameSimOut = (& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $MainScript -TestBedtimePrompt -AutoSelectForTest 3 -SteamRegistryPathOverride $testSteamKey) -join "`n"
+Remove-Item -Path 'HKCU:\Software\PcOptimizerVerify' -Recurse -Force -ErrorAction SilentlyContinue
+$gameSimJson = if ($gameSimOut -match 'BEDTIME_PROMPT_RESULT=(\{.+\})') { $matches[1] | ConvertFrom-Json } else { $null }
+Assert-Check "4.2" "Steam RunningAppID (578080) Game Detection Logic" ($null -ne $gameSimJson -and $gameSimJson.GameCheckRunning -eq $true -and $gameSimJson.GameCheckSummary -match '578080') "Running=$($gameSimJson.GameCheckRunning), Summary=$($gameSimJson.GameCheckSummary)" "Running=True, Summary matches AppID 578080"
+
+$waitProc = Start-Process -FilePath 'powershell.exe' -ArgumentList "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$MainScript`" -TestBedtimePrompt -AutoSelectForTest 3 -SimulateGameWaitMs 2600" -PassThru
+Start-Sleep -Milliseconds 1900
+$waitProc.Refresh()
+$waitWsMB = [math]::Round($waitProc.WorkingSet64 / 1MB, 2)
+$waitProc.WaitForExit(8000) | Out-Null
+Assert-Check "4.3" "Game-Wait Loop Trimmed Working Set < 8 MB" ($waitWsMB -gt 0 -and $waitWsMB -lt 8.0) "${waitWsMB} MB" "< 8.0 MB"
+
+$briBeforeBed = [int](Get-CimInstance -Namespace root\WMI -ClassName WmiMonitorBrightness).CurrentBrightness
+$swB1 = [Diagnostics.Stopwatch]::StartNew()
+$b1Out = (& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $MainScript -TestBedtimePrompt -AutoSelectForTest 1) -join "`n"
+$swB1.Stop()
+$b1Json   = if ($b1Out -match 'BEDTIME_PROMPT_RESULT=(\{.+\})') { $matches[1] | ConvertFrom-Json } else { $null }
+$b1Boost  = Get-PowerCfgHexAndDec '54533251-82be-4824-96c1-47b60b740d00' 'be337238-0d82-4146-a960-4f3749d470c7'
+$b1Freq   = Get-PowerCfgHexAndDec '54533251-82be-4824-96c1-47b60b740d00' '75b0ae3f-bce0-45a7-8c89-c9611c25e100'
+$b1Epp    = Get-PowerCfgHexAndDec '54533251-82be-4824-96c1-47b60b740d00' '36687f9e-e3a5-4dbf-b1dc-15eb381c6863'
+$b1Wifi   = Get-PowerCfgHexAndDec '19cbb8fa-5279-450e-9fac-8a3d5fedd0c1' '12bbebe6-58d6-4636-95bb-3217ef867c1a'
+$b1Es     = Get-PowerCfgHexAndDec 'de830923-a562-41af-a086-e3a2c6bad2da' 'e69653ca-cf7f-4f05-aa73-cb833fa90ad4'
+$b1Bri    = [int](Get-CimInstance -Namespace root\WMI -ClassName WmiMonitorBrightness).CurrentBrightness
+$b1Wmi    = Get-CimInstance -Namespace root\WMI -ClassName BatteryStatus
+$b1Bi     = $batAgent.GetBatteryInformation().BatteryInformationList[0]
+$b1CrOk   = (-not $b1Wmi.PowerOnline) -or ($b1Bi.RemainingPercent -ge 98) -or ($b1Json.VerifiedChargeRateMW -gt 0)
+$b1Ok     = ($swB1.ElapsedMilliseconds -lt 13000) -and
+            ($b1Json.PostChargeMode -eq 'Normal') -and
+            $b1CrOk -and
+            ($b1Json.IsExpressCharging -eq $false) -and
+            ($b1Json.PreArmedCampusMode -eq 'Standard') -and
+            ($b1Boost.DCDec -eq 0 -and $b1Freq.DCDec -eq 2400 -and $b1Epp.DCDec -eq 90 -and $b1Wifi.DCDec -eq 3 -and $b1Es.DCDec -eq 100) -and
+            ($b1Bri -eq $briBeforeBed)
+Assert-Check "4.4" "Bedtime [1] Standard (Normal 100%, WMI ChargeRate > 0, DC 2400MHz, AC Bri Untouched)" $b1Ok "Elapsed=$($swB1.ElapsedMilliseconds)ms, Charge=$($b1Json.PostChargeMode), ChargeRate=$($b1Json.VerifiedChargeRateMW)mW, DCFreq=$($b1Freq.DCDec), Bri=${b1Bri}% (Before=${briBeforeBed}%)" "<13000ms (incl EC soft-start), Normal, ChargeRate>0mW, DC=2400MHz, Bri=${briBeforeBed}%"
+
+$retHomeOut = (& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $MainScript -CheckReturnHome) -join "`n"
+Assert-Check "4.5" "Return-Home Safety Guard (-CheckReturnHome when ChargeMode=Normal)" ($retHomeOut -match 'Lưu ý: Máy đang mở sạc 100% từ lần đi học trước') "WarningMatched=$($retHomeOut -match 'Lưu ý: Máy đang mở sạc 100%')" "Displays 100% Return-Home lock-back reminder"
+
+$swB2 = [Diagnostics.Stopwatch]::StartNew()
+$b2Out = (& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $MainScript -TestBedtimePrompt -AutoSelectForTest 2) -join "`n"
+$swB2.Stop()
+$b2Json   = if ($b2Out -match 'BEDTIME_PROMPT_RESULT=(\{.+\})') { $matches[1] | ConvertFrom-Json } else { $null }
+$b2Cores  = Get-PowerCfgHexAndDec '54533251-82be-4824-96c1-47b60b740d00' 'ea062031-0e34-4ff1-9b6d-eb1059334028'
+$b2Freq   = Get-PowerCfgHexAndDec '54533251-82be-4824-96c1-47b60b740d00' '75b0ae3f-bce0-45a7-8c89-c9611c25e100'
+$b2Epp    = Get-PowerCfgHexAndDec '54533251-82be-4824-96c1-47b60b740d00' '36687f9e-e3a5-4dbf-b1dc-15eb381c6863'
+$b2CcPol  = Get-ItemProperty -Path 'HKCU:\Software\CocCoc\Browser' -ErrorAction SilentlyContinue
+$b2Bri    = [int](Get-CimInstance -Namespace root\WMI -ClassName WmiMonitorBrightness).CurrentBrightness
+$b2CrOk   = (-not $b1Wmi.PowerOnline) -or ($b1Bi.RemainingPercent -ge 98) -or ($b2Json.VerifiedChargeRateMW -gt 0)
+$b2Ok     = ($swB2.ElapsedMilliseconds -lt 5000) -and
+            ($b2Json.ReturnHomeBanner -eq $true) -and
+            ($b2Json.PostChargeMode -eq 'Normal') -and
+            $b2CrOk -and
+            ($b2Json.PreArmedCampusMode -eq 'Ultra') -and
+            ($b2Cores.DCDec -eq 50 -and $b2Freq.DCDec -eq 1700 -and $b2Epp.DCDec -eq 100) -and
+            ($b2CcPol.HighEfficiencyModeEnabled -eq 1 -and $b2CcPol.BatterySaverModeAvailability -eq 1) -and
+            ($b2Bri -eq $briBeforeBed)
+Assert-Check "4.6" "Bedtime [2] Ultra (ReturnHomeBanner, WMI ChargeRate > 0, DC 50% Cores 1700MHz, CocCoc=1, Bri Untouched)" $b2Ok "Elapsed=$($swB2.ElapsedMilliseconds)ms, Banner=$($b2Json.ReturnHomeBanner), ChargeRate=$($b2Json.VerifiedChargeRateMW)mW, DCCores=$($b2Cores.DCDec)%, DCFreq=$($b2Freq.DCDec), Bri=${b2Bri}%, PreArmed=$($b2Json.PreArmedCampusMode)" "<5000ms, Banner=True, ChargeRate>0mW, DCCores=50%, DCFreq=1700, Bri=${briBeforeBed}%, PreArmed=Ultra"
+
+$swBT = [Diagnostics.Stopwatch]::StartNew()
+$btOut = (& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $MainScript -TestBedtimePrompt -AutoSelectForTest Timeout) -join "`n"
+$swBT.Stop()
+$btJson = if ($btOut -match 'BEDTIME_PROMPT_RESULT=(\{.+\})') { $matches[1] | ConvertFrom-Json } else { $null }
+Assert-Check "4.7" "Bedtime Timeout Default (< 3s -> Locks Storage 60% & PreArmed=None)" ($swBT.ElapsedMilliseconds -lt 3000 -and $btJson.PostChargeMode -eq 'Storage' -and $btJson.PreArmedCampusMode -eq 'None') "Elapsed=$($swBT.ElapsedMilliseconds)ms, Charge=$($btJson.PostChargeMode), PreArmed=$($btJson.PreArmedCampusMode)" "<3000ms, Charge=Storage, PreArmed=None"
+
+$swB3 = [Diagnostics.Stopwatch]::StartNew()
+$b3Out = (& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $MainScript -TestBedtimePrompt -AutoSelectForTest 3) -join "`n"
+$swB3.Stop()
+$b3Json = if ($b3Out -match 'BEDTIME_PROMPT_RESULT=(\{.+\})') { $matches[1] | ConvertFrom-Json } else { $null }
+$null = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $MainScript -VeNha
+$finalCm  = $batAgent.GetBatteryChargeMode().BatteryChargeMode.ToString()
+$finalBri = [int](Get-CimInstance -Namespace root\WMI -ClassName WmiMonitorBrightness).CurrentBrightness
+Assert-Check "4.8" "Bedtime [3] & Final -VeNha Restore (< 3s, Locked Storage 60%, Original Brightness)" ($swB3.ElapsedMilliseconds -lt 3000 -and $b3Json.PostChargeMode -eq 'Storage' -and $finalCm -eq 'Storage' -and $finalBri -eq $preBri) "Elapsed=$($swB3.ElapsedMilliseconds)ms, FinalCharge=$finalCm, FinalBri=${finalBri}%" "<3000ms, FinalCharge=Storage, FinalBri=${preBri}%"
+
+$nowCheck = Get-Date
+$expectedNightDate = if ($nowCheck.Hour -lt 4) { $nowCheck.Date.AddDays(-1).ToString('yyyy-MM-dd') } else { $nowCheck.Date.ToString('yyyy-MM-dd') }
+$rtGuard = Get-Content $RuntimeJson -Raw | ConvertFrom-Json
+$rtGuard | Add-Member -NotePropertyName LastBedtimePromptDate -NotePropertyValue $expectedNightDate -Force
+$rtGuard | ConvertTo-Json -Depth 4 | Set-Content -Path $RuntimeJson -Encoding UTF8
+$swGuard = [Diagnostics.Stopwatch]::StartNew()
+$guardOut = (& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $MainScript -BedtimePrompt) -join "`n"
+$swGuard.Stop()
+$rtGuard.LastBedtimePromptDate = ''
+$rtGuard | ConvertTo-Json -Depth 4 | Set-Content -Path $RuntimeJson -Encoding UTF8
+Assert-Check "4.9" "Once-Per-Night Date Guard (00:00-03:59 Night Cycle Rollover)" ($swGuard.ElapsedMilliseconds -lt 2000 -and [string]::IsNullOrWhiteSpace($guardOut)) "NightDate=$expectedNightDate, Elapsed=$($swGuard.ElapsedMilliseconds)ms, OutputLen=$($guardOut.Length)" "Exits silently in <2000ms with 0 UI when NightCycleDate already prompted"
+
+# CRITICAL: Preserve user's pre-test runtime_state.json and BatteryChargeMode (never clobber active Normal 100% charge!)
+if ($null -ne $preRuntimeRaw) {
+    [System.IO.File]::WriteAllText($RuntimeJson, $preRuntimeRaw, (New-Object System.Text.UTF8Encoding($false)))
+}
+if ($preChargeMode -eq 'Normal') {
+    $null = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $MainScript -SacDay100
+}
+$restoredCm  = $batAgent.GetBatteryChargeMode().BatteryChargeMode.ToString()
+$restoredWmi = Get-CimInstance -Namespace root\WMI -ClassName BatteryStatus
+$restoredBi  = $batAgent.GetBatteryInformation().BatteryInformationList[0]
+$restoredCrOk = if ($preChargeMode -eq 'Normal' -and $restoredWmi.PowerOnline -and $restoredBi.RemainingPercent -lt 98) { $restoredWmi.ChargeRate -gt 0 } else { $true }
+Assert-Check "4.10" "User Pre-Test ChargeMode Preserved ($preChargeMode)" ($restoredCm -eq $preChargeMode -and $restoredCrOk) "RestoredMode=$restoredCm, ChargeRate=$($restoredWmi.ChargeRate) mW, Current=$($restoredBi.Current) mA" "RestoredMode=$preChargeMode (with ChargeRate > 0 mW when Normal)"
 
 $failed = @($results | Where-Object { $_.Status -ne 'PASS' }).Count
 Write-Host "`n=== VERIFICATION SUMMARY: $($results.Count - $failed)/$($results.Count) PASSED, $failed FAILED ===" -ForegroundColor $(if ($failed -eq 0) { "Green" } else { "Red" })

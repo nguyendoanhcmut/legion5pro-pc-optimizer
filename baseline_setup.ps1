@@ -143,7 +143,7 @@ function Get-TargetTelemetryTasks {
         if ($found) {
             foreach ($t in $found) {
                 # Never include protected tasks
-                if ($t.TaskName -notin @('PUBGWirelessAndHzGuard', 'GoodbyeDPI-On', 'GoodbyeDPI-Off', 'AutoShutdown', 'DailyArtWallpaper')) {
+                if ($t.TaskName -notin @('PUBGWirelessAndHzGuard', 'LegionBedtimeBatteryReminder', 'GoodbyeDPI-On', 'GoodbyeDPI-Off', 'AutoShutdown', 'DailyArtWallpaper')) {
                     $tasks += $t
                 }
             }
